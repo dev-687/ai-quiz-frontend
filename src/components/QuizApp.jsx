@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuizQuestion from "./QuizQuestion";
-
+import CelebrationModal from "./CelebrationModal";
+import Confetti from "react-confetti";
 export default function QuizApp() {
   const [subject, setSubject] = useState("");
-  const [numQuestions, setNumQuestions] = useState(5); // Default number of questions
+  const [numQuestions, setNumQuestions] = useState(5); 
   const [quiz, setQuiz] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [score, setScore] = useState(0);
   const [answersCount, setAnswersCount] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState({}); // Track selected answers
-
+  const [selectedAnswers, setSelectedAnswers] = useState({}); 
+  const [showCelebration, setShowCelebration] = useState(false);
   const fetchQuiz = async () => {
     if (!subject.trim()) {
       setError("Please enter a subject.");
@@ -25,7 +26,7 @@ export default function QuizApp() {
     setScore(0);
     setAnswersCount(0);
     setSelectedAnswers({}); // Clear previous answers
-
+    setShowCelebration(false);
     try {
       const response = await fetch("https://ai-quiz-backend-psi.vercel.app/generate-quiz", {
         method: "POST",
@@ -65,9 +66,6 @@ export default function QuizApp() {
 
     setSelectedAnswers((prev) => ({ ...prev, [questionIndex]: selectedAnswer }));
 
-    // Debugging logs (Remove after testing)
-    console.log("Selected Answer:", selectedAnswer);
-    console.log("Correct Answer:", correctAnswer);
 
     if (String(selectedAnswer).trim().toLowerCase() === String(correctAnswer).trim().toLowerCase()) {
         setScore((prevScore) => prevScore + 1);
@@ -76,11 +74,18 @@ export default function QuizApp() {
     setAnswersCount((prevCount) => prevCount + 1);
 };
 
-
+useEffect(() => {
+    if (answersCount === quiz.length && quiz.length > 0 && score === quiz.length) {
+      setShowCelebration(true);
+    }
+  }, [answersCount, quiz.length, score]);
   
 
   return (
     <div className="p-6 max-w-xl mx-auto">
+        {showCelebration && <Confetti numberOfPieces={500} gravity={0.2} wind={0.01} />}
+        {showCelebration && <CelebrationModal onClose={() => setShowCelebration(false)} />} 
+
       <h1 className="text-2xl font-bold mb-4">AI Quiz Generator</h1>
 
       <input
