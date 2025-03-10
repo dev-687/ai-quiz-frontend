@@ -9,6 +9,7 @@ export default function QuizApp() {
   const [error, setError] = useState(null);
   const [score, setScore] = useState(0);
   const [answersCount, setAnswersCount] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState({}); // Track selected answers
 
   const fetchQuiz = async () => {
     if (!subject.trim()) {
@@ -23,6 +24,7 @@ export default function QuizApp() {
     setQuiz([]);
     setScore(0);
     setAnswersCount(0);
+    setSelectedAnswers({}); // Clear previous answers
 
     try {
       const response = await fetch("https://ai-quiz-backend-psi.vercel.app/generate-quiz", {
@@ -38,7 +40,7 @@ export default function QuizApp() {
         throw new Error("Invalid quiz response from server.");
       }
 
-      // Extract JSON inside the string (removes ```json and ``` if present)
+      // Extract JSON inside the string (removes ```json\n|\n``` if present)
       const cleanedJson = data.quizText.replace(/```json\n|\n```/g, "");
 
       // Parse it into a JavaScript object
@@ -58,12 +60,24 @@ export default function QuizApp() {
     setLoading(false);
   };
 
-  const handleAnswerSelect = (selectedAnswer, correctAnswer) => {
-    if (selectedAnswer === correctAnswer) {
-      setScore((prevScore) => prevScore + 1);
+  const handleAnswerSelect = (questionIndex, selectedAnswer, correctAnswer) => {
+    if (selectedAnswers[questionIndex] !== undefined) return; // Prevent multiple selections
+
+    setSelectedAnswers((prev) => ({ ...prev, [questionIndex]: selectedAnswer }));
+
+    // Debugging logs (Remove after testing)
+    console.log("Selected Answer:", selectedAnswer);
+    console.log("Correct Answer:", correctAnswer);
+
+    if (String(selectedAnswer).trim().toLowerCase() === String(correctAnswer).trim().toLowerCase()) {
+        setScore((prevScore) => prevScore + 1);
     }
+
     setAnswersCount((prevCount) => prevCount + 1);
-  };
+};
+
+
+  
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -105,7 +119,10 @@ export default function QuizApp() {
                 question={q.question}
                 options={q.options}
                 correctAnswer={q.answer}
-                onAnswerSelect={handleAnswerSelect}
+                selectedAnswer={selectedAnswers[index]}
+                onAnswerSelect={(selectedAnswer) =>
+                  handleAnswerSelect(index, selectedAnswer, q.answer)
+                }
               />
             ))}
           </ul>

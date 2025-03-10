@@ -1,12 +1,11 @@
 import { useState } from "react";
-
 export default function QuizQuestion({ question, options, correctAnswer, onAnswerSelect }) {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
 
     const handleAnswerClick = (answer) => {
         if (selectedAnswer === null) {
             setSelectedAnswer(answer);
-            onAnswerSelect(answer === correctAnswer);
+            onAnswerSelect(answer, correctAnswer); // Pass both selected and correct answers
         }
     };
 
