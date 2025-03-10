@@ -28,10 +28,12 @@ export default function CelebrationModal({ onClose }) {
   useEffect(() => {
     setTimeout(() => setVisible(true), 500);
 
-    // Play sound effect
-    const victorySound = new Audio("https://www.myinstants.com/media/sounds/tada-fanfare-a.mp3");
-    victorySound.play();
-
+    const playSound = () => {
+        const sound = new Audio("../assets/winnig-sound.mp3"); // Correct path
+        sound.play().catch((error) => console.log("Audio playback failed:", error));
+      };
+  
+      playSound();
   }, []);
 
   return (
