@@ -42,7 +42,7 @@ export default function QuizApp() {
       }
 
       // Extract JSON inside the string (removes ```json\n|\n``` if present)
-      const cleanedJson = data.quizText.replace(/```json\n|\n```/g, "");
+      const cleanedJson = JSON.parse(data.quizText);
 
       // Parse it into a JavaScript object
       const parsedQuiz = JSON.parse(cleanedJson);
