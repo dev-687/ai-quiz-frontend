@@ -39,7 +39,7 @@ export default function QuizQuestion({ question, options, correctAnswer, onAnswe
                 {options.map((option, index) => (
                     <li
                         key={index}
-                        className={`p-2 rounded-md cursor-pointer transition-all duration-300 
+                        className={`p-2 my-1 rounded-md cursor-pointer transition-all duration-300 
                             ${selectedAnswer
                                 ? option === correctAnswer
                                     ? "bg-green-500 text-white"
