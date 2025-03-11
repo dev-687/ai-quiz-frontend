@@ -33,26 +33,33 @@ export default function QuizApp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subject, numQuestions }),
       });
-
+    
       const data = await response.json();
       console.log("API Response:", data);
-
+    
       if (!data.quizText) {
         throw new Error("Invalid quiz response from server.");
       }
-
-      const parsedQuiz = JSON.parse(data.quizText);
-
-      if (!parsedQuiz.quiz || !Array.isArray(parsedQuiz.quiz)) {
+    
+      let parsedQuiz;
+      try {
+        parsedQuiz = JSON.parse(data.quizText);
+      } catch (parseError) {
+        throw new Error("Failed to parse quiz data. Possible format issue.");
+      }
+    
+      if (!Array.isArray(parsedQuiz)) {
         throw new Error("Invalid quiz format received.");
       }
-
-      setQuiz(parsedQuiz.quiz);
+    
+      setQuiz(parsedQuiz);
     } catch (error) {
       console.error("Error fetching quiz:", error);
       setError("Failed to generate quiz. Please try again.");
       setQuiz([]);
     }
+    
+    
 
     setLoading(false);
   };
