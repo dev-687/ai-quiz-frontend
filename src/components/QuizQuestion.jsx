@@ -27,7 +27,7 @@ export default function QuizQuestion({ question, options, correctAnswer, onAnswe
                     <Confetti
                         width={questionRef.current.offsetWidth}
                         height={questionRef.current.offsetHeight}
-                        numberOfPieces={300} // Adjust for burst size
+                        numberOfPieces={600} // Adjust for burst size
                         gravity={0.4} // Control pop speed
                         wind={0}
                         recycle={false} // Custom colors
