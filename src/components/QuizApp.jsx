@@ -41,11 +41,7 @@ export default function QuizApp() {
         throw new Error("Invalid quiz response from server.");
       }
 
-      // Extract JSON inside the string (removes ```json\n|\n``` if present)
-      const cleanedJson = JSON.parse(data.quizText);
-
-      // Parse it into a JavaScript object
-      const parsedQuiz = JSON.parse(cleanedJson);
+      const parsedQuiz = JSON.parse(data.quizText);
 
       if (!parsedQuiz.quiz || !Array.isArray(parsedQuiz.quiz)) {
         throw new Error("Invalid quiz format received.");
